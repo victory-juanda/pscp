@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator & Laporan PSCP T1 - InJourney Airports</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        ij: {
+                            blue: '#005baa',
+                            teal: '#00a3ad',
+                            gold: '#f2a900',
+                            navy: '#0d2238'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Background Gradient InJourney Airports Theme */
+        body {
+            background: linear-gradient(135deg, #0d2238 0%, #005baa 45%, #00a3ad 80%, #f2a900 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-card-dark {
+            background: rgba(13, 34, 56, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 91, 170, 0.4);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 font-sans p-3 sm:p-6 flex flex-col justify-between items-center">
+
+    <!-- Container Utama -->
+    <div class="w-full max-w-5xl space-y-5 my-auto">
+        
+        <!-- Header Branding InJourney -->
+        <div class="glass-card rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div class="bg-gradient-to-tr from-ij-blue to-ij-teal p-3.5 rounded-xl text-white shadow-lg">
+                    <i class="fa-solid fa-plane-departure text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center justify-center sm:justify-start gap-1 text-xs font-bold tracking-widest text-ij-blue uppercase">
+                        <span>injourney</span>
+                        <span class="text-ij-gold">Airports</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Kalkulator & Form Laporan PSCP T1</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 bg-slate-100 px-3.5 py-2 rounded-full text-xs font-medium text-slate-700 border border-slate-200 shadow-inner">
+                <i class="fa-regular fa-clock text-ij-blue font-bold"></i>
+                <span id="currentDate">--:--</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            
+            <!-- Form Input Data -->
+            <div class="lg:col-span-7 space-y-5">
+                
+                <!-- Salam & Pengaturan Laporan -->
+                <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-heading text-ij-blue"></i> Salam Laporan
+                        </h2>
+                    </div>
+                    <div>
+                        <input type="text" id="inputGreeting" value="Selamat Pagi" 
+                            class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-semibold text-slate-800 text-sm focus:ring-2 focus:ring-ij-blue outline-none transition"
+                            oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Card Input Penumpang -->
+                <div class="glass-card rounded-2xl p-5 shadow-xl space-y-4">
+                    <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
+                        <i class="fa-solid fa-calculator text-ij-blue"></i>
+                        Perhitungan Penumpang (Pax)
+                    </h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                                Jumlah Pax (Penumpang Saat Ini)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="inputPax" value="1177" min="0" placeholder="Masukkan jumlah pax..."
+                                    class="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-lg text-slate-900 focus:ring-2 focus:ring-ij-blue outline-none transition shadow-sm"
+                                    oninput="calculateCounts()">
+                                <i class="fa-solid fa-users absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                                TO (Transit / Transfer)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="inputTO" value="5" min="0" 
+                                    class="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-300 rounded-xl font-bold text-lg text-purple-900 focus:ring-2 focus:ring-purple-500 outline-none transition shadow-sm"
+                                    oninput="updatePreview()">
+                                <i class="fa-solid fa-plane-arrival absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hasil Perhitungan Otomatis -->
+                    <div class="grid grid-cols-3 gap-2 pt-1">
+                        <div class="bg-blue-50/90 border border-blue-200 p-2.5 rounded-xl text-center">
+                            <span class="text-[10px] font-extrabold text-blue-700 uppercase tracking-wider block">Tell (Pax x2)</span>
+                            <span id="resTell" class="text-lg font-black text-blue-900">2.354</span>
+                        </div>
+                        <div class="bg-emerald-50/90 border border-emerald-200 p-2.5 rounded-xl text-center">
+                            <span class="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider block">BC (7,72%)</span>
+                            <span id="resBC" class="text-lg font-black text-emerald-900">90.86</span>
+                            <span id="resBCDetail" class="text-[9px] text-emerald-600 font-semibold block">Dibulatkan: 91</span>
+                        </div>
+                        <div class="bg-amber-50/90 border border-amber-200 p-2.5 rounded-xl text-center">
+                            <span class="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider block">OC (3,29%)</span>
+                            <span id="resOC" class="text-lg font-black text-amber-900">77.45</span>
+                            <span id="resOCDetail" class="text-[9px] text-amber-600 font-semibold block">Dibulatkan: 77</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detail Barang (PI, Tertinggal, Titipan, Ruwet) -->
+                <div class="glass-card rounded-2xl p-5 shadow-xl space-y-4">
+                    <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-200 pb-3">
+                        <i class="fa-solid fa-boxes-packing text-ij-teal"></i>
+                        Detail Barang & Temuan (Bisa Diisi / Edit Sesuai Kebutuhan)
+                    </h2>
+
+                    <div class="space-y-3.5 text-xs">
+                        <!-- PI -->
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">◇ PI (Prohibited Items / Barang Dilarang):</label>
+                            <input type="text" id="inputPI" value="23 gunting, 92 korek, 9 obeng, 4 pisau, 5 cutter"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-ij-teal outline-none transition"
+                                oninput="updatePreview()">
+                        </div>
+
+                        <!-- Barang Tertinggal -->
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">◇ Barang Tertinggal (Gunakan Enter atau Koma untuk item baru):</label>
+                            <textarea id="inputTertinggal" rows="3"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-ij-teal outline-none transition"
+                                oninput="updatePreview()">Jaket, KTP (atas nama Farrel Yovandi), Gelang</textarea>
+                        </div>
+
+                        <!-- Barang Titipan -->
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">◇ Barang Titipan:</label>
+                            <input type="text" id="inputTitipan" value="Nihil"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-ij-teal outline-none transition"
+                                oninput="updatePreview()">
+                        </div>
+
+                        <!-- Barang Ruwet -->
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">◇ Barang Ruwet (Gunakan Enter atau Koma untuk item baru):</label>
+                            <textarea id="inputRuwet" rows="3"
+                                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-ij-teal outline-none transition"
+                                oninput="updatePreview()">Pisau lipat warna merah, 1 kotak tools box beserta gunting dan pisau lipat</textarea>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Preview Format Laporan & Action Button -->
+            <div class="lg:col-span-5 flex flex-col space-y-4">
+                <div class="glass-card-dark rounded-2xl p-5 shadow-2xl flex-1 flex flex-col justify-between text-white border border-white/20">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                            <h2 class="font-bold text-xs sm:text-sm text-ij-gold uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-file-lines"></i> Preview Format Laporan
+                            </h2>
+                            <span class="text-[10px] bg-emerald-500/30 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-400/30 font-semibold">Ready</span>
+                        </div>
+
+                        <pre id="previewText" class="font-mono text-xs sm:text-sm leading-relaxed text-slate-100 whitespace-pre-wrap bg-slate-900/80 p-4 rounded-xl border border-slate-700/60 min-h-[350px] max-h-[500px] overflow-y-auto select-all"></pre>
+                    </div>
+
+                    <!-- Tombol Kirim & Copy -->
+                    <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
+                        <button onclick="copyAndSubmit()" 
+                            class="w-full py-3.5 px-4 bg-gradient-to-r from-ij-gold via-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 transform active:scale-98">
+                            <i class="fa-solid fa-copy text-base"></i>
+                            <span>SALIN OTOMATIS & KIRIM</span>
+                        </button>
+                        <p class="text-[11px] text-slate-300 text-center flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i> Klik untuk langsung menyalin teks ke WhatsApp / Clipboard
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-xs text-white/70 pt-2 font-medium">
+            InJourney Airports System &bull; PSCP T1 Security Management
+        </div>
+
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 z-50">
+        <i class="fa-solid fa-circle-check text-2xl"></i>
+        <div>
+            <h4 class="font-bold text-xs">Berhasil Disalin!</h4>
+            <p class="text-[11px] text-emerald-100">Format laporan otomatis tersalin ke clipboard Anda.</p>
+        </div>
+    </div>
+
+    <!-- Script Logika Perhitungan & Interaksi -->
+    <script>
+        // Update waktu secara realtime
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('currentDate').innerText = now.toLocaleDateString('id-ID', options);
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Format angka dengan titik ribuan
+        function formatNumber(num) {
+            return new Intl.NumberFormat('id-ID').format(num);
+        }
+
+        // Kalkulasi Otomatis
+        function calculateCounts() {
+            const paxInput = parseFloat(document.getElementById('inputPax').value) || 0;
+
+            // Rumus sesuai instruksi:
+            // Tell = Pax * 2
+            // BC   = Pax * 7.72% (0.0772)
+            // OC   = Tell * 3.29% (0.0329)
+            const tell = paxInput * 2;
+            const bcExact = paxInput * 0.0772;
+            const ocExact = tell * 0.0329;
+
+            // Tampilkan angka bulat di UI preview laporan, dan nilai detail di widget
+            document.getElementById('resTell').innerText = formatNumber(tell);
+            document.getElementById('resBC').innerText = formatNumber(Math.round(bcExact));
+            document.getElementById('resBCDetail').innerText = `Exact: ${bcExact.toFixed(2)}`;
+            document.getElementById('resOC').innerText = formatNumber(Math.round(ocExact));
+            document.getElementById('resOCDetail').innerText = `Exact: ${ocExact.toFixed(2)}`;
+
+            updatePreview();
+        }
+
+        // Fungsi format list peluru (*)
+        function formatListItems(rawText) {
+            if (!rawText.trim() || rawText.trim().toLowerCase() === 'nihil') {
+                return 'Nihil';
+            }
+            
+            // Format pemisah baris baru / koma
+            let items = rawText.split(/\n|,/).map(item => item.trim()).filter(item => item !== '');
+            if (items.length === 0) return 'Nihil';
+            return items.map(item => ` * ${item}`).join('\n');
+        }
+
+        // Generate Teks Laporan
+        function generateReportText() {
+            const greeting = document.getElementById('inputGreeting').value || 'Selamat Pagi';
+            const pax = parseFloat(document.getElementById('inputPax').value) || 0;
+            const tell = pax * 2;
+            const bc = Math.round(pax * 0.0772);
+            const oc = Math.round(tell * 0.0329);
+            const to = document.getElementById('inputTO').value || 0;
+
+            const pi = document.getElementById('inputPI').value || 'Nihil';
+            const tertinggal = formatListItems(document.getElementById('inputTertinggal').value);
+            const titipan = formatListItems(document.getElementById('inputTitipan').value);
+            const ruwet = formatListItems(document.getElementById('inputRuwet').value);
+
+            return `${greeting}\n\nIjin Laporan PSCP T1,\nSebagai Berikut :\n• Pax : ${formatNumber(pax)}\n• Tell : ${formatNumber(tell)}\n• BC : ${formatNumber(bc)}\n• OC : ${formatNumber(oc)}\n• TO : ${to}\n\n◇ PI :  ${pi}\n\n◇ Barang tertinggal:\n${tertinggal}\n\n◇ Barang titipan:\n${titipan}\n\n◇ Barang Ruwet:\n${ruwet}\n\nTerima Kasih`;
+        }
+
+        // Update tampilan preview
+        function updatePreview() {
+            document.getElementById('previewText').textContent = generateReportText();
+        }
+
+        // Salin Otomatis ke Clipboard (Kompatibel dengan ExecCommand fallback)
+        function copyAndSubmit() {
+            const textToCopy = generateReportText();
+
+            // Salin dengan cara execCommand / Clipboard API
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('Gagal menyalin:', err);
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        // Tampilkan Notifikasi Toast
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Jalankan awal
+        window.onload = function() {
+            calculateCounts();
+        };
+    </script>
+</body>
+</html>
